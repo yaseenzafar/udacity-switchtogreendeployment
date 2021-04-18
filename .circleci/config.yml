@@ -1,0 +1,16 @@
+version: 2.1
+
+jobs:
+  cloudfront_distro:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Create Cloudfront distribution
+          command: |
+            aws cloudformation deploy --template-file cloudfront.yml --stack-name production-distro --parameter-overrides PipelineID="udacitybuckettest1" --tags project=udapeople &
+workflows:
+  my_workflow:
+    jobs:
+      - cloudfront_distro
