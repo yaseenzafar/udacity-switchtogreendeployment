@@ -9,7 +9,7 @@ jobs:
           aws cloudformation deploy \
             --template-file bucket.yml \
             --stack-name "${CIRCLE_WORKFLOW_ID}" \
-            --parameter-overrides NAME="${CIRCLE_WORKFLOW_ID}"
+            --parameter-overrides NAME="${CIRCLE_WORKFLOW_ID}" \
             --region=us-west-2
       - run: aws s3 sync . s3://"${CIRCLE_WORKFLOW_ID}" --delete
 
@@ -22,7 +22,8 @@ jobs:
           aws cloudformation deploy \
             --template-file cloudformation.yml \
             --stack-name cloudfront \
-            --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID}"
+            --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID}" \
+            --region=us-west-2
 
 
 workflows:
