@@ -8,7 +8,7 @@ jobs:
       - run: |
           aws cloudformation deploy \
             --template-file bucket.yml \
-            --stack-name udacity-${CIRCLE_WORKFLOW_ID} \
+            --stack-name udacity-stack-${CIRCLE_WORKFLOW_ID} \
             --parameter-overrides NAME=${CIRCLE_WORKFLOW_ID} \
             --region=us-west-2
       - run: aws s3 sync . s3://udacity-${CIRCLE_WORKFLOW_ID} --delete
