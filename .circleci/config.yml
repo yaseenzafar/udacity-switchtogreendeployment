@@ -7,12 +7,20 @@ jobs:
       - checkout
       - run: |
           aws cloudformation deploy \
-            --template-file bucket.yml \
-            --stack-name yaseen-${CIRCLE_WORKFLOW_ID} \
-            --parameter-overrides NAME=${CIRCLE_WORKFLOW_ID} \
-            --region=us-west-2
-      - run: aws s3 sync . s3://"yaseen-${CIRCLE_WORKFLOW_ID}" --delete
+          --template-file bucket.yml \
+          --stack-name "${CIRCLE_WORKFLOW_ID:0:7}" \ # ${CIRCLE_WORKFLOW_ID:0:7} takes the first 7 chars of the variable CIRCLE_CI_WORKFLOW_ID
+          --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID:0:7}"      
 
+  get_last_deployment_id:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run: |
+          aws cloudformation \
+          list-exports --query "Exports[?Name==\`PipelineID\`].Value" \
+          --no-paginate --output text
+  
   promote_to_production:
     docker:
       - image: amazon/aws-cli
@@ -20,10 +28,9 @@ jobs:
       - checkout
       - run: |
           aws cloudformation deploy \
-            --template-file cloudformation.yml \
-            --stack-name cloudfront \
-            --parameter-overrides PipelineID=${CIRCLE_WORKFLOW_ID} \
-            --region=us-west-2
+          --template-file cloudformation.yml \
+          --stack-name production-distro \
+          --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID}"
 
 
 workflows:
