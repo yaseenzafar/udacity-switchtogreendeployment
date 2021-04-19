@@ -30,7 +30,7 @@ workflows:
   default:
     jobs:
       - create_and_deploy_front_end
-      - get_last_deployment_id:
+      - get_last_deployment_id
           requires: [create_and_deploy_front_end]
-      - promote_to_production:
+      - promote_to_production
           requires: [get_last_deployment_id]
