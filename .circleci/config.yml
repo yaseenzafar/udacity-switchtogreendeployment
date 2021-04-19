@@ -7,10 +7,10 @@ jobs:
       - checkout
       - run: |
           aws cloudformation deploy \
-          --template-file bucket.yml \
-          --stack-name "${CIRCLE_WORKFLOW_ID}" \ 
-          --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID}" \
-          --region=us-west-2      
+            --template-file bucket.yml \
+            --stack-name "${CIRCLE_WORKFLOW_ID}" \ 
+            --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID}" \
+            --region=us-west-2      
 
       - run: aws s3 sync . s3://${CIRCLE_WORKFLOW_ID} --delete
 
@@ -21,8 +21,8 @@ jobs:
       - checkout
       - run: |
           aws cloudformation \
-          list-exports --query "Exports[?Name==\`PipelineID\`].Value" \
-          --no-paginate --output text
+            list-exports --query "Exports[?Name==\`PipelineID\`].Value" \
+            --no-paginate --output text
   
   promote_to_production:
     docker:
@@ -31,10 +31,10 @@ jobs:
       - checkout
       - run: |
           aws cloudformation deploy \
-          --template-file cloudformation.yml \
-          --stack-name production-distro \
-          --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID}" \
-          --region=us-west-2
+            --template-file cloudformation.yml \
+            --stack-name production-distro \
+            --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID}" \
+            --region=us-west-2
 
 
 workflows:
